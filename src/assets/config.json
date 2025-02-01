@@ -1,0 +1,27 @@
+[
+  {
+    "path": "d:\\hhhh",
+    "name": "Galeria1",
+    "galleryJson": "../assets/data.json"
+  },
+  {
+    "path": "d:\\hhhh",
+    "name": "Galeria2",
+    "galleryJson": "../assets/data.json"
+  },
+  {
+    "path": "d:\\hhhh",
+    "name": "Galeria3",
+    "galleryJson": "../assets/data.json"
+  },
+  {
+    "path": "d:\\hhhh",
+    "name": "Galeria4",
+    "galleryJson": "../assets/data.json"
+  },
+  {
+    "path": "d:\\hhhh",
+    "name": "Galeria5",
+    "galleryJson": "../assets/data.json"
+  }
+]
