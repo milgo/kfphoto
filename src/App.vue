@@ -1,5 +1,5 @@
 <template>
-  <PhotoGallery msg="Hello Vue 3 in CodeSandbox!" />
+  <PhotoGallery />
 </template>
 
 <script>

@@ -1,8 +1,24 @@
 <template>
-  <table border="1">
+
+<table border="0" width="70%">
+  <tr>
+    <td rowspan="2" width="60%" align="left">
+      <h2>Krystyna Falkowska - Galeria </h2>
+    </td>
+    <td><button @click="this.downloadDb()">Pobierz albumy</button>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Wgraj albumy: <input type="file" ref="doc" @change="uploadDb()" />
+    </td>
+  </tr>
+</table>
+
+  <table border="0">
     <tr align="left">
       <td v-for="g in galInfo" valign="top">
-        <button @click="gallery = g; monthDesc = db.filter((gal) => gal.name === g.name)[0].data">
+        <button @click="gallery = g; this.monthsDesc = JSON.parse(JSON.stringify(db.filter((gal) => gal.name === g.name)[0].data));">
           {{ g.name }}
         </button>
       </td>
@@ -36,14 +52,14 @@
                     <template v-if="desc">
                       <template v-if="desc.edit === true">
                         <VarInput
-                          @blur="storeMonthDesc(year, month)"
-                          @enter="storeMonthDesc(year, month)"
+                          @blur="getMonthDescription(year, month).edit = false; storeMonthDesc(gallery.name)"
+                          @enter="getMonthDescription(year, month).edit = false; storeMonthDesc(gallery.name)"
                           :value="desc.desc"
                           @valueChanged="
                             (value) =>
                               (getMonthDescription(year, month).desc = value)
                           "
-                      />efe</template>
+                      /></template>
                       <template v-else
                         ><div
                           @click="getMonthDescription(year, month).edit = true"
@@ -100,6 +116,7 @@
     </tr>
   </table>
 
+
   <!--<textarea width="500" height="300">
 <template >{{ this.optimaliseJson(gallery) }}</template> </textarea
   >-->
@@ -124,9 +141,8 @@ import galeria5 from "../assets/data.json";
 //import galleryDescJson from "../assets/months.json";
 import VarInput from "./VarInput.vue";
 export default {
-  name: "HelloWorld",
+  name: "PhotoGallery",
   props: {
-    msg: String,
   },
   components: {
     VarInput: VarInput,
@@ -160,6 +176,7 @@ export default {
   data() {
     return {
       db: [],
+      uploadFile: null,
       gallery: [], //galleryJson,
       monthsDesc: [],
       config: configJson,
@@ -216,18 +233,17 @@ export default {
       });
       return json;
     },
-    showAlert: (msg) => {
-      alert(msg);
-    },
     getMonthDescription(year, month) {
-      return this.monthsDesc.filter((d) => {
-        return d.year === year && d.month === month;
+      var ret = this.monthsDesc.filter((d) => {
+        return d.year === year.toString() && d.month === month.toString();
       })[0];
+      //console.log(this.monthsDesc);
+      return ret;
     },
-    storeMonthDesc(year, month) {
-      this.getMonthDescription(year, month).edit = false;
-      //store in file
-      window.localStorage.setItem("photogalleryKF", JSON.stringify(db));
+    storeMonthDesc(galname) {
+      //console.log("storing " + galname + "...");
+      this.db.filter((gal) => gal.name === galname)[0].data = this.monthsDesc;
+      window.localStorage.setItem("photogalleryKF", JSON.stringify(this.db));
     },
     yearsOnly(data) {
       var yearsSet = new Set();
@@ -247,30 +263,46 @@ export default {
         });
       return Array.from(monthSet).sort((a, b) => b - a);
     },
-    fetchConfig(filename) {
-      alert(filename);
-      fetch(filename).then(
-        (res) => {
-          alert(JSON.stringify(res));
-          self.gallery = res.data;
-        },
-        (error) => {
-          alert(error);
-        }
-      );
+    getNow() {
+      const today = new Date();
+      const date = today.getFullYear()+""+(today.getMonth()+1)+""+today.getDate();
+      const time = today.getHours()+""+ today.getMinutes() +""+ today.getSeconds();
+      const dateTime = date +""+ time;
+      return dateTime;
     },
-    loadJSON(filePath, callback) {
-      var xobj = new XMLHttpRequest();
-      xobj.overrideMimeType("application/json");
-      xobj.open("GET", filePath, true);
-      xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == "200") {
-          // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-          callback(xobj.responseText);
-        }
-      };
-      xobj.send(null);
+    downloadDb() {
+      const text = JSON.stringify(this.db); // Get the content from the textarea
+      // Create a new Blob object with the text content
+      const blob = new Blob([text], { type: 'text/plain' });
+ 
+      // Create a temporary <a> element and set its download attribute to specify the file name
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = this.getNow()+'.kfg'; // Replace with your desired file name
+ 
+      // Programmatically click the link to trigger the download
+      link.click();
+      // Clean up the URL.createObjectURL by revoking the object URL after some time
+      setTimeout(() => {
+        URL.revokeObjectURL(link.href);
+      }, 100);
     },
+    uploadDb(){
+      this.uploadFile = this.$refs.doc.files[0];
+      const reader = new FileReader();
+      if (this.uploadFile.name.includes(".kfg")) {
+        reader.onload = (res) => {
+          this.db = JSON.parse(res.target.result);
+          window.localStorage.setItem("photogalleryKF", JSON.stringify(this.db));
+          window.location.reload();
+          //console.log(this.db);
+        };
+        reader.onerror = (err) => console.log(err);
+        reader.readAsText(this.uploadFile);
+      }else{
+        alert("Niepoprawny format pliku!");
+      }
+    }
   },
 };
 </script>
