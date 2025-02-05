@@ -132,11 +132,13 @@ const galleryDescJson = ref({});
 <script>
 import { ref } from "vue";
 import configJson from "../assets/config.json";
-import galeria1 from "../assets/data.json";
-import galeria2 from "../assets/data.json";
-import galeria3 from "../assets/data.json";
-import galeria4 from "../assets/data.json";
-import galeria5 from "../assets/data.json";
+import gfreeagent from "../assets/freeagent.json";
+import gmypassport01 from "../assets/mypassport01.json";
+import gmypassport02 from "../assets/mypassport02.json";
+import gmypassport03 from "../assets/mypassport03.json";
+import gseagate from "../assets/seagate.json";
+import gserwer from "../assets/serwer.json";
+import gwindows from "../assets/windows.json";
 //import galleryJson from "../assets/data.json";
 //import galleryDescJson from "../assets/months.json";
 import VarInput from "./VarInput.vue";
@@ -148,7 +150,7 @@ export default {
     VarInput: VarInput,
   },
   mounted() {
-    if(!window.localStorage.getItem("photogalleryKF")){
+    if(!window.localStorage.getItem("galleryKF")){
       var db = [];
       this.galInfo.forEach((g) => {
         var galObj = {};
@@ -184,28 +186,38 @@ export default {
       galInfo: [
         {
           path: "d:\\hhhh",
-          name: "Galeria1",
-          galleryJson: galeria1,
+          name: "Freeagent",
+          galleryJson: gfreeagent,
         },
         {
           path: "d:\\hhhh",
-          name: "Galeria2",
-          galleryJson: galeria2,
+          name: "Mypassport01",
+          galleryJson: gmypassport01,
         },
         {
           path: "d:\\hhhh",
-          name: "Galeria3",
-          galleryJson: galeria3,
+          name: "Mypassport02",
+          galleryJson: gmypassport02,
         },
         {
           path: "d:\\hhhh",
-          name: "Galeria4",
-          galleryJson: galeria4,
+          name: "Mypassport03",
+          galleryJson: gmypassport03,
         },
         {
           path: "d:\\hhhh",
-          name: "Galeria5",
-          galleryJson: galeria5,
+          name: "Seagate",
+          galleryJson: gseagate,
+        },
+        {
+          path: "d:\\hhhh",
+          name: "Serwer",
+          galleryJson: gserwer,
+        },
+        {
+          path: "d:\\hhhh",
+          name: "Windows",
+          galleryJson: gwindows,
         },
       ],
       monthNames: [
